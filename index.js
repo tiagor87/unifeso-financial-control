@@ -1,15 +1,16 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { User } = require("./models");
 
 mongoose.connect(
-  "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/financial-control?retryWrites=true&w=majority",
+  "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
   }
 );
 const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error: "));
+db.on("error", console.error.bind(console, "Connection error: "));
 db.once("open", function () {
   console.log("MongoDB Connected.");
 });
@@ -18,20 +19,11 @@ const app = express();
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
-let dictionary = {};
-let id = 0;
-
 // CREATE
-app.post("/", (request, response) => {
-  const obj = request.body;
-  if (!obj) {
-    return response.status(412).send({
-      message: "O corpo da mensagem é obrigatório"
-    });
-  }
-  dictionary[++id] = obj;
-  obj.id = id;
-  response.status(201).send(obj);
+app.post("/", async (request, response) => {
+  const jsonContent = request.body;
+  const user = await User.create(jsonContent);
+  response.status(201).send(user);
 });
 
 // READ
