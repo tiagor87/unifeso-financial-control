@@ -37,5 +37,5 @@ db.once("open", function () {
 
 ## Docs
 
-[MarvelApp](marvelapp.com/prototype/12e93d2e)
-[Requisitos](docs.google.com/document/d/1-tF9KOeFZ3E_6utGECMkF-_18YvlFq5PJoDBpQ5gRb4/edit?usp=sharing)
+- [MarvelApp](marvelapp.com/prototype/12e93d2e)
+- [Requisitos](docs.google.com/document/d/1-tF9KOeFZ3E_6utGECMkF-_18YvlFq5PJoDBpQ5gRb4/edit?usp=sharing)
