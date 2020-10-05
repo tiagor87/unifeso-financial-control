@@ -27,32 +27,52 @@ app.post("/", async (request, response) => {
 });
 
 // READ
-app.get("/:id", (request, response) => {
-  const obj = dictionary[request.params.id];
-  if (!obj) {
-    return response.status(404).send({
-      message: "Not found"
+app.get("/:id", async (request, response) => {
+  const { id } = request.params;
+
+  try {
+    const result = await User.findById(id);
+
+    response.status(200).json({ 
+      username: result.username, 
+      password: result.password
     });
+  } catch {
+    console.log('Id is not valid');
   }
-  response.status(200).send(obj);
 });
 
 // UPDATE
-app.put("/:id", (request, response) => {
-  const obj = request.body;
-  dictionary[request.params.id] = obj;
-  if (!obj) {
-    return response.status(412).send({
-      message: "O corpo da mensagem é obrigatório"
+app.put("/:id", async (request, response) => {
+  const { id } = request.params;
+
+  const { username, password } = request.body;
+
+  try {
+    const result = await User.findByIdAndUpdate(id, { 
+      username, password
     });
+
+    response.status(200).json({ 
+      username, password
+    });
+  } catch {
+    console.log('Id is not valid');
   }
-  response.status(200).send(obj);
 });
 
 // DELETE
-app.delete("/:id", (request, response) => {
-  dictionary[request.params.id] = null;
-  response.status(204).end();
+// infinite load on request
+app.delete("/:id", async (request, response) => {
+  const { id } = request.params;
+
+  try {
+    User.findOneAndRemove(User._id == id);
+
+    response.status(202);
+  } catch {
+    console.log('Id is not valid');
+  }
 });
 
 const port = 8090;
