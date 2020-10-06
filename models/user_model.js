@@ -15,7 +15,6 @@ const UserSchema = new Schema({
   }
 });
 
-const collectionName = "User";
-const User = model(collectionName, UserSchema);
+const User = model("User", UserSchema);
 
 module.exports = User;
