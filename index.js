@@ -30,37 +30,59 @@ app.post("/", async (request, response) => {
 });
 
 // READ
-app.get("/:id", (request, response) => {
-  const obj = dictionary[request.params.id];
-  if (!obj) {
-    return response.status(404).send({
-      message: "Not found"
+app.get("/:id", async (request, response) => {
+
+  const id = request.params.id;
+  try {
+    const result = await User.findById(id);
+    response.status(200).send(result);
+    
+  } catch{
+    response.status(401).json({
+      "Unauthorized":"incorrect id"
+      
     });
-  }
-  response.status(200).send(obj);
+  }; 
+
 });
 
 // UPDATE
-app.put("/:id", (request, response) => {
-  const obj = request.body;
-  if (!dictionary[request.params.id]) {
-    return response.status(404).send({
-      message: "Usuário não encontrado."
+app.put("/:id", async (request, response) => {
+  
+  const id = request.params.id;
+  const body = request.body;
+  console.log(body);
+  try {
+    const result = await User.findByIdAndUpdate(id, {
+      
+      username: body.username,
+      password: body.password
+
     });
-  }
-  dictionary[request.params.id] = obj;
-  response.status(200).send(obj);
+    response.status(200).send(body);
+    
+  } catch{
+    response.status(401).json({
+      "Unauthorized":"incorrect id"
+      
+    });
+  }; 
+
 });
 
 // DELETE
 app.delete("/:id", (request, response) => {
-  if (!dictionary[request.params.id]) {
-    return response.status(404).send({
-      message: "Usuário não encontrado."
-    });
-  }
-  dictionary[request.params.id] = null;
-  response.status(204).end();
+  
+  const id = request.params.id;
+
+  User.findByIdAndRemove(id, (err, doc) => {
+    if(!err) {
+      response.status(204).end();
+    } else {
+      response.status(401).json({ "Unauthorized":"incorrect id"});
+    }
+  });
+
 });
 
 const port = 8090;
