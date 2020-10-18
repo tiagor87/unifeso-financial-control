@@ -15,8 +15,6 @@ db.once("open", function () {
   console.log("MongoDB Connected.");
 });
 
-const dictionary = {};
-
 const app = express();
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
@@ -30,36 +28,43 @@ app.post("/", async (request, response) => {
 });
 
 // READ
-app.get("/:id", (request, response) => {
-  const obj = dictionary[request.params.id];
-  if (!obj) {
+app.get("/:id", async (request, response) => {
+  const user = await User.findById(request.params.id);
+  if (user == null) {
     return response.status(404).send({
-      message: "Not found"
+      message: "Usuário não encontrado."
     });
   }
-  response.status(200).send(obj);
+  response.status(200).send(user);
 });
 
 // UPDATE
-app.put("/:id", (request, response) => {
-  const obj = request.body;
-  if (!dictionary[request.params.id]) {
-    return response.status(404).send({
-      message: "Usuário não encontrado."
+app.put("/:id", async (request, response) => {
+  try {
+    const user = await User.findByIdAndUpdate(request.params.id, request.body, {
+      new: true
+    });
+    if (user == null) {
+      return response.status(404).send({
+        message: "Usuário não encontrado."
+      });
+    }
+    response.status(200).send(user);
+  } catch (error) {
+    response.status(500).send({
+      message: error.toString()
     });
   }
-  dictionary[request.params.id] = obj;
-  response.status(200).send(obj);
 });
 
 // DELETE
-app.delete("/:id", (request, response) => {
-  if (!dictionary[request.params.id]) {
+app.delete("/:id", async (request, response) => {
+  const user = await User.findByIdAndDelete(request.params.id);
+  if (user == null) {
     return response.status(404).send({
       message: "Usuário não encontrado."
     });
   }
-  dictionary[request.params.id] = null;
   response.status(204).end();
 });
 
