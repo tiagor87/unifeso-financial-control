@@ -5,8 +5,8 @@ const userService = new UserService();
 const userRouter = express.Router();
 
 // /users/
-userRouter.get("/", async (_, response) => {
-  const users = await userService.getAllAsync();
+userRouter.get("/", async (request, response) => {
+  const users = await userService.getAllAsync(request.query);
   response.status(200).send(users);
 });
 

@@ -40,8 +40,8 @@ class UserService {
     };
   }
 
-  async getAllAsync() {
-    const users = await User.find();
+  async getAllAsync(query) {
+    const users = await User.find(query);
     return users.map((user) => ({
       id: user._id,
       createdAt: user.createdAt,
