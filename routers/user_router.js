@@ -4,11 +4,13 @@ const { UserService } = require("../services");
 const userService = new UserService();
 const userRouter = express.Router();
 
+// /users/
 userRouter.get("/", async (_, response) => {
   const users = await userService.getAllAsync();
   response.status(200).send(users);
 });
 
+// /users/
 userRouter.post("/", async (request, response) => {
   const createUser = request.body;
   const user = await userService.createAsync(createUser);
@@ -16,17 +18,25 @@ userRouter.post("/", async (request, response) => {
 });
 
 // READ
+// /users/<id>
 userRouter.get("/:id", async (request, response) => {
-  const user = await userService.getByIdAsync(request.params.id);
-  if (user == null) {
-    return response.status(404).send({
-      message: "Usuário não encontrado."
+  try {
+    const user = await userService.getByIdAsync(request.params.id);
+    if (user == null) {
+      return response.status(404).send({
+        message: "Usuário não encontrado."
+      });
+    }
+    response.status(200).send(user);
+  } catch (error) {
+    response.status(500).send({
+      message: error.toString()
     });
   }
-  response.status(200).send(user);
 });
 
 // UPDATE
+// /users/<id>
 userRouter.put("/:id", async (request, response) => {
   try {
     const user = await userService.updateAsync(request.params.id, request.body);
@@ -44,6 +54,7 @@ userRouter.put("/:id", async (request, response) => {
 });
 
 // DELETE
+// /users/<id>
 userRouter.delete("/:id", async (request, response) => {
   const user = await userService.removeByIdAsync(request.params.id);
   if (user == null) {

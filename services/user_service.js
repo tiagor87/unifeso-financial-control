@@ -1,12 +1,23 @@
+const { isValidObjectId } = require("mongoose");
 const { User } = require("../models");
 
 class UserService {
   async createAsync(createUser) {
-    return await User.create(createUser);
+    const user = await User.create(createUser);
+    return {
+      id: user._id,
+      createdAt: user.createdAt,
+      username: user.username
+    };
   }
 
   async updateAsync(id, updateUser) {
-    return await User.findByIdAndUpdate(id, updateUser, { new: true });
+    const user = await User.findByIdAndUpdate(id, updateUser, { new: true });
+    return {
+      id: user._id,
+      createdAt: user.createdAt,
+      username: user.username
+    };
   }
 
   async removeByIdAsync(id) {
@@ -14,11 +25,28 @@ class UserService {
   }
 
   async getByIdAsync(id) {
-    return await User.findById(id);
+    if (!isValidObjectId(id)) {
+      throw new Error("Id is invalid.");
+    }
+
+    const user = await User.findById(id);
+
+    if (user == null) return null;
+
+    return {
+      id: user._id,
+      createdAt: user.createdAt,
+      username: user.username
+    };
   }
 
   async getAllAsync() {
-    return await User.find();
+    const users = await User.find();
+    return users.map((user) => ({
+      id: user._id,
+      createdAt: user.createdAt,
+      username: user.username
+    }));
   }
 }
 
