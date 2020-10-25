@@ -1,9 +1,16 @@
 const { isValidObjectId } = require("mongoose");
 const { User } = require("../models");
+const { PreconditionFailedError, NotFoundError } = require("../errors");
 
 class UserService {
   async createAsync(createUser) {
-    const user = await User.create(createUser);
+    const user = new User(createUser);
+
+    const error = await user.validateSync();
+    if (error) throw new PreconditionFailedError(error);
+
+    await user.save();
+
     return {
       id: user._id,
       createdAt: user.createdAt,
@@ -12,7 +19,13 @@ class UserService {
   }
 
   async updateAsync(id, updateUser) {
+    if (!isValidObjectId(id) || updateUser == null) {
+      throw new PreconditionFailedError(
+        "O identificador e os campos para atualização são obrigatórios."
+      );
+    }
     const user = await User.findByIdAndUpdate(id, updateUser, { new: true });
+    if (user == null) throw new NotFoundError("O usuário não foi encontrado.");
     return {
       id: user._id,
       createdAt: user.createdAt,
@@ -21,7 +34,8 @@ class UserService {
   }
 
   async removeByIdAsync(id) {
-    return await User.findByIdAndDelete(id);
+    const user = await User.findByIdAndDelete(id);
+    if (user == null) throw new NotFoundError("O usuário não foi encontrado.");
   }
 
   async getByIdAsync(id) {
@@ -31,7 +45,7 @@ class UserService {
 
     const user = await User.findById(id);
 
-    if (user == null) return null;
+    if (user == null) throw new NotFoundError("O usuário não foi encontrado.");
 
     return {
       id: user._id,

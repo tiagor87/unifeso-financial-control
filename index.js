@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const { ErrorHandlerMiddleware } = require("./middlewares");
 const { userRouter } = require("./routers");
 
 mongoose.connect(
@@ -20,6 +21,7 @@ app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
 app.use("/users", userRouter);
+app.use(ErrorHandlerMiddleware);
 
 const port = 8090;
 app.listen(port, () => console.log(`Rodando em localhost:${port}`));
