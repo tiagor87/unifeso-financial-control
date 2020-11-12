@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { User } = require("./models");
+const { ErrorHandlerMiddleware } = require("./middlewares");
+const { userRouter } = require("./routers");
 
 mongoose.connect(
   "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
@@ -9,6 +10,7 @@ mongoose.connect(
     useUnifiedTopology: true
   }
 );
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Connection error: "));
 db.once("open", function () {
@@ -38,7 +40,7 @@ app.get("/:id", async (request, response) => {
       password: result.password
     });
   } catch {
-    console.log('Id is not valid');
+    response.status(401).json({'Unauthorized': 'Id is not valid'});
   }
 });
 
@@ -57,23 +59,22 @@ app.put("/:id", async (request, response) => {
       username, password
     });
   } catch {
-    console.log('Id is not valid');
+    response.status(401).json({'Unauthorized': 'Id is not valid'});
   }
 });
 
 // DELETE
-// infinite load on request
 app.delete("/:id", async (request, response) => {
   const { id } = request.params;
 
-  try {
-    User.findOneAndRemove(User._id == id);
-
-    response.status(202);
-  } catch {
-    console.log('Id is not valid');
-  }
+  User.findByIdAndRemove(id, (err, doc) => {
+    if(!err) {
+      response.status(204).end();
+    } else {
+      response.status(401).json({'Unauthorized': 'Id is not valid'});
+    }
+  });
 });
 
 const port = 8090;
-app.listen(port, () => console.log(`Rodando em localhost:${port}`));
+app.listen(port, () => console.log(`Server started on localhost:${port}`));
