@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require('cors');
+
 const { ErrorHandlerMiddleware } = require("./middlewares");
 const { userRouter } = require("./routers");
 
@@ -18,6 +20,8 @@ db.once("open", function () {
 });
 
 const app = express();
+
+app.use(cors()); // gives access to all frontends to access the api
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
