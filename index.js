@@ -1,6 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const { User } = require("./models");
+const { ErrorHandlerMiddleware } = require("./middlewares");
+const { userRouter } = require("./routers");
 
 mongoose.connect(
   "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
@@ -15,12 +16,11 @@ db.once("open", function () {
   console.log("MongoDB Connected.");
 });
 
-const dictionary = {};
-
 const app = express();
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
+<<<<<<< HEAD
 // CREATE
 app.post("/", async (request, response) => {
   debugger;
@@ -75,6 +75,10 @@ app.delete("/:id", (request, response) => {
     }
   });
 });
+=======
+app.use("/users", userRouter);
+app.use(ErrorHandlerMiddleware);
+>>>>>>> upstream/master
 
 const port = 8090;
 app.listen(port, () => console.log(`Rodando em localhost:${port}`));
