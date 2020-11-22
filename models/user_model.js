@@ -1,17 +1,47 @@
 const { Schema, model } = require("mongoose");
 
 const UserSchema = new Schema({
-  username: {
+  fotoPerfil: {
     type: String,
-    required: [true, "O nome do usuário é obrigatório"]
+    required: false
+  },
+  nome: {
+      type: String,
+      required: [true, "O nome do usuário é obrigatório"]
+  },
+  sobrenome: {
+      type: String,
+      required: [true, "O campo 'Sobrenome' é obrigatório"]
+  },
+  genero: {
+      type: String,
+      required: false
+  },
+  dataNascimento: {
+      type: Date,
+      required: false
+  },
+  telefone: {
+      type: String,
+      required: false
+  },
+  endereco: {
+      type: String,
+      required: false
+  },
+  email: {
+      type: String,
+      required: [true, "O e-mail é obrigatório"],
+      lowercase: true
   },
   password: {
-    type: String,
-    required: [true, "A senha é obrigatória"]
+      type: String,
+      required: [true, "A senha é obrigatória"],
+      select: false
   },
   createdAt: {
-    type: Date,
-    default: Date.now()
+      type: Date,
+      default: Date.now()
   }
 });
 
