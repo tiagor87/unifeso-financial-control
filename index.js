@@ -1,5 +1,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const cors = require('cors');
+
 const { ErrorHandlerMiddleware } = require("./middlewares");
 const { userRouter } = require("./routers");
 
@@ -10,6 +12,7 @@ mongoose.connect(
     useUnifiedTopology: true
   }
 );
+
 const db = mongoose.connection;
 db.on("error", console.error.bind(console, "Connection error: "));
 db.once("open", function () {
@@ -17,6 +20,8 @@ db.once("open", function () {
 });
 
 const app = express();
+
+app.use(cors()); // gives access to all frontends to access the api
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
@@ -24,4 +29,4 @@ app.use("/users", userRouter);
 app.use(ErrorHandlerMiddleware);
 
 const port = 8090;
-app.listen(port, () => console.log(`Rodando em localhost:${port}`));
+app.listen(port, () => console.log(`Server started on localhost:${port}`));
