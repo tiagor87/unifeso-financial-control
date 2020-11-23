@@ -62,6 +62,23 @@ class UserService {
       username: user.username
     }));
   }
+
+  async validateAsync(query) {
+    const {username, password} = query
+
+    if ( username == null ) throw new NotFoundError("Sem usuário informado");
+    if ( password == null ) throw new NotFoundError("Sem senha informada");
+    
+    const user = await User.findOne({username, password})
+
+    if (user == null) throw new NotFoundError("O usuário não foi encontrado.");
+
+    return {
+      id: user._id,
+      createdAt: user.createdAt,
+      username: user.username
+    };
+  }
 }
 
 module.exports = UserService;

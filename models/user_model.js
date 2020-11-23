@@ -9,6 +9,10 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "A senha é obrigatória"]
   },
+  email: {
+    type: String,
+    required: [true, "O email é obrigatório"]
+  },
   createdAt: {
     type: Date,
     default: Date.now()

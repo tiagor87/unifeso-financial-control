@@ -24,6 +24,15 @@ userRouter.post(
   })
 );
 
+// /users/validate
+userRouter.post(
+  "/validate",
+  asyncHandler(async (request, response) => {
+    const user = await userService.validateAsync(request.body);
+    response.status(201).send(user);
+  })
+);
+
 // READ
 // /users/<id>
 userRouter.get(

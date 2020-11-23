@@ -2,9 +2,11 @@ const express = require("express");
 const mongoose = require("mongoose");
 const { ErrorHandlerMiddleware } = require("./middlewares");
 const { userRouter } = require("./routers");
+const cors = require('cors');
 
 mongoose.connect(
-  "mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
+  //"mongodb+srv://unifeso:unifeso-password@unifeso.kwuxv.gcp.mongodb.net/unifeso-financial-control?retryWrites=true&w=majority",
+  "mongodb://localhost/financial-control",
   {
     useNewUrlParser: true,
     useUnifiedTopology: true
@@ -17,6 +19,7 @@ db.once("open", function () {
 });
 
 const app = express();
+app.use(cors())
 app.use(express.json()); // for parsing application/json
 app.use(express.urlencoded({ extended: true })); // for parsing application/x-www-form-urlencoded
 
