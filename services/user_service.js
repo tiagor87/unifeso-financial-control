@@ -50,7 +50,8 @@ class UserService {
     return {
       id: user._id,
       createdAt: user.createdAt,
-      username: user.username
+      username: user.username,
+      email: user.email
     };
   }
 
@@ -76,8 +77,39 @@ class UserService {
     return {
       id: user._id,
       createdAt: user.createdAt,
-      username: user.username
+      username: user.username,
+      email: user.email
     };
+  }
+
+  async getRecoverAsync(query){
+    const {username, email} = query
+
+    if ((username == null) || (email == null))
+      throw new PreconditionFailedError("Valores de requisição incompletos.")
+
+    const user = await User.findOne({username, email})
+    if (user == null) throw new NotFoundError("O usuário não foi encontrado.");
+
+    return {
+      id: user._id,
+      createdAt: user.createdAt,
+      username: user.username,
+      rps_pergunta: user.rps_pergunta,
+      email: user.email
+    };
+
+  }
+
+  async recoverAsync(query){
+    const {username, email, password, rps_resposta} = query
+
+    if ((username == null) || (email == null) || (rps_resposta == null))
+      throw new PreconditionFailedError("Valores de requisição incompletos.")
+
+    const user = await User.findOne({username, email, rps_resposta})
+    if (user == null) throw new NotFoundError("Valores inválidos. Não foi possível realizar a recuperação.");
+    return await this.updateAsync(user._id, {password})
   }
 }
 

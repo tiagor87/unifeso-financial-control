@@ -13,6 +13,14 @@ const UserSchema = new Schema({
     type: String,
     required: [true, "O email é obrigatório"]
   },
+  rps_pergunta: {
+    type: String,
+    required: [true, "A pergunta de recuperação é obrigatória"]
+  },
+  rps_resposta: {
+    type: String,
+    required: [true, "A resposta de recuperação é obrigatória"]
+  },
   createdAt: {
     type: Date,
     default: Date.now()
