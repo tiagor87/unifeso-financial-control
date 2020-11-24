@@ -24,6 +24,32 @@ userRouter.post(
   })
 );
 
+// /users/validate
+userRouter.post(
+  "/validate",
+  asyncHandler(async (request, response) => {
+    const user = await userService.validateAsync(request.body);
+    response.status(201).send(user);
+  })
+);
+
+// /users/recover
+userRouter.put(
+  "/recover",
+  asyncHandler(async (request, response) => {
+    const user = await userService.recoverAsync(request.body);
+    response.status(201).send(user);
+  })
+);
+
+userRouter.post(
+  "/recover",
+  asyncHandler(async (request, response) => {
+    const user = await userService.getRecoverAsync(request.body);
+    response.status(201).send(user);
+  })
+);
+
 // READ
 // /users/<id>
 userRouter.get(
