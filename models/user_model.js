@@ -12,6 +12,14 @@ const UserSchema = new Schema({
   createdAt: {
     type: Date,
     default: Date.now()
+  },
+  nome: {
+    type: String,
+    required: [true, "O nome é obrigatório"]
+  },
+  foto: {
+    type: String,
+    deafult: null
   }
 });
 
